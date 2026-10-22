@@ -1,0 +1,1 @@
+# FoldPage keeps default rules.

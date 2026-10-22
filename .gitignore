@@ -1,0 +1,20 @@
+# Gradle / build
+.gradle/
+.kotlin/
+build/
+app/build/
+captures/
+*.log
+
+# Local machine files
+local.properties
+.DS_Store
+
+# Signing material must never be published
+signing/*.keystore
+signing/*.jks
+*.keystore
+*.jks
+
+# Generated release artifacts
+dist/
