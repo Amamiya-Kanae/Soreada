@@ -4,36 +4,45 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.compose'
 }
 
+def releaseKeystore = rootProject.file('signing/foldpage-release.keystore')
+def hasReleaseKeystore = releaseKeystore.exists()
+
 android {
-    namespace 'com.kanae.foldpage'
+    namespace 'com.kanae.soreada'
     compileSdk 35
 
     defaultConfig {
-        applicationId "com.kanae.foldpage"
+        applicationId "com.kanae.soreada"
         minSdk 26
         targetSdk 35
-        versionCode 2
-        versionName "0.2.0"
+        versionCode 3
+        versionName "0.3.0"
         vectorDrawables { useSupportLibrary = true }
     }
 
     signingConfigs {
-        release {
-            storeFile rootProject.file('signing/foldpage-release.keystore')
-            storePassword 'foldpage'
-            keyAlias 'foldpage'
-            keyPassword 'foldpage'
+        if (hasReleaseKeystore) {
+            release {
+                storeFile releaseKeystore
+                storePassword System.getenv('SOREADA_STORE_PASSWORD') ?: 'foldpage'
+                keyAlias 'foldpage'
+                keyPassword System.getenv('SOREADA_KEY_PASSWORD') ?: 'foldpage'
+            }
         }
     }
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.release
+            if (hasReleaseKeystore) {
+                signingConfig signingConfigs.release
+            }
         }
         release {
             minifyEnabled false
             shrinkResources false
-            signingConfig signingConfigs.release
+            if (hasReleaseKeystore) {
+                signingConfig signingConfigs.release
+            }
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

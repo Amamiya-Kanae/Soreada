@@ -1,155 +1,195 @@
-# 蘇打閱讀 Soreada 0.2.0
+<p align="center">
+  <img src="docs/screenshots/icon.png" width="112" alt="Soreada icon" />
+</p>
 
-<img src="docs/screenshots/icon.png" width="96" alt="Soreada 圖標" />
+<h1 align="center">Soreada · 蘇打閱讀</h1>
 
-為漫畫與文字而做的 **EPUB / TXT 閱讀器（Android）**。直向顯示完整一頁；橫向或展開摺疊屏時，左右並排兩頁，留白以白色填充。介面採用 Google Material 3，支援繁體中文、简体中文與 English。
+<p align="center">
+  <strong>A free, open-source, modern EPUB/TXT reader for Android foldables and tablets.</strong><br />
+  <strong>免費、開源、現代的 EPUB／TXT 閱讀器，支援摺疊屏與平板寬屏</strong><br />
+  <strong>免费、开源、现代的 EPUB／TXT 阅读器，支持折叠屏与平板宽屏</strong>
+</p>
 
-> 專案原名 FoldPage／摺頁。名稱已改為 **蘇打閱讀 Soreada**；Android package 仍保留 `com.kanae.foldpage`，方便直接覆蓋更新舊版，書庫與進度不會消失。若之後要正式發佈，可在上架前再改 package。
+<p align="center">
+  <img alt="Android 8.0+" src="https://img.shields.io/badge/Android-8.0%2B-3DDC84?logo=android&logoColor=white" />
+  <img alt="Kotlin" src="https://img.shields.io/badge/Kotlin-2.0-7F52FF?logo=kotlin&logoColor=white" />
+  <img alt="Material 3" src="https://img.shields.io/badge/Compose-Material%203-6750A4" />
+  <img alt="Version" src="https://img.shields.io/badge/version-0.3.0-blue" />
+  <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+</p>
 
-## 下載
+<p align="center">
+  <a href="#繁體中文">繁體中文</a> ·
+  <a href="#简体中文">简体中文</a> ·
+  <a href="#english">English</a>
+</p>
 
-| 項目 | 位置 |
-| --- | --- |
-| APK | [`dist/Soreada-0.2.0.apk`](dist/Soreada-0.2.0.apk)（約 6.3 MB） |
-| SHA-256 | [`dist/Soreada-0.2.0.apk.sha256`](dist/Soreada-0.2.0.apk.sha256) |
-| 安裝說明 | [`安裝說明.md`](安裝說明.md) |
-| 示範檔 | [`samples/`](samples/)（漫畫 EPUB、文字 EPUB、TXT） |
+---
 
-```text
-224ab6cca7efa8ce96b404b51aa2e74219d7008fbfe36a2c649e08b310f443ac
-```
+## Screenshots
 
-- 套件：`com.kanae.foldpage`
-- 版本：`0.2.0`（versionCode 2）
-- 最低系統：Android 8.0（API 26）；目標 API 35
-- 簽章：本機自簽（更新時請保留 `signing/` 內的 keystore）
+| Library / 書庫 | First-run tips / 首次提示 | Foldable spread / 摺疊屏雙頁 |
+| --- | --- | --- |
+| ![Library](docs/screenshots/library.png) | ![Onboarding](docs/screenshots/onboarding.png) | ![Foldable spread](docs/screenshots/comic-landscape.png) |
 
-## 0.2.0 新增
+| Eye care / 護眼模式 | Reader settings / 閱讀設定 | Text spread / 文字雙頁 |
+| --- | --- | --- |
+| ![Eye care](docs/screenshots/eyecare.png) | ![Reader settings](docs/screenshots/reader-settings.png) | ![Text spread](docs/screenshots/text-landscape.png) |
 
-- **新圖標**：打開的書配上上升的蘇打氣泡，薄荷綠、珊瑚與深海綠色，符合 Material 3 的簡潔風格。
+---
 
-- **護眼模式**：整個畫面加上暖色濾鏡，降低藍光；可調 0–100% 強度，書庫、設定、閱讀頁都有效。
-- **紙張顆粒**：閱讀頁加上細微黑白顆粒，模仿紙張質感；可調 0–100% 強度，只套用在閱讀頁。
-- **雙指縮放**：漫畫頁支援 1×–4× 雙指縮放與放大後單指拖動；縮放期間暫停左右翻頁，換頁或換版面會自動還原。文字頁不使用縮放，維持分頁閱讀。
-- **預設翻頁方向改為左至右**：舊版 `AUTO` 設定會一次性遷移為 LTR；仍可在閱讀設定選「自動／左至右／右至左」。
-- **全局設置**：書庫右上角齒輪進入，包含語言、外觀、顯示效果、關於。
-  - 語言：繁體中文／简体中文／English，立即切換、不用重開。
-  - 外觀：跟隨系統／淺色／深色（手動切換）。
-  - 顯示效果：護眼模式、紙張顆粒與強度。
-- **書籤**：每本書可加多個書籤；閱讀器右上角書籤按鈕加入／移除，進度條上方顯示書籤圓點，點圓點直接跳到該頁。文字書以「字元位置」儲存，換字級、旋轉、摺疊後仍能回到同一段。
-- **書庫搜尋**：按書名或作者即時過濾，附無結果提示。
-- **品牌更新**：App 名稱改為「蘇打閱讀／Soreada」，啟動畫面、關於頁與文件同步更新。
+<a id="繁體中文"></a>
+## 繁體中文
 
-## 既有功能
+### 簡介
 
-- **書庫**：SAF 匯入 `.epub` / `.txt`，自動抓封面、閱讀進度、最近閱讀排序、深色模式、空白引導頁；可繼續閱讀、從第一頁重新開始、移除（含確認）。
-- **漫畫 EPUB**：EPUB 2/3 spine 解析，支援「spine 直接是圖片」與「XHTML 包一張圖」；封面抓取；圖片直接從 zip 解碼並用 LruCache。
-- **文字書**：TXT 自動辨識 UTF-8／UTF-16／GB18030（GBK 已實測），EPUB 文字章節；章名粗體、章節新頁、14–30sp 字級、重排保留位置。
-- **摺疊屏自適應**：直向單頁；橫向且寬 ≥ 600dp、高 ≥ 480dp 時雙頁；外屏／窄視窗維持單頁。旋轉、展開、摺疊都會重新排版並保留位置。
-- **操作**：左右滑動翻頁；點左／右 30% 翻頁（RTL 自動左右互換）；點中間顯示工具列（6 秒自動隱藏）；頁碼滑桿、上／下一頁、沉浸全螢幕。
-- **Material 3**：動態色彩、edge-to-edge、狀態列圖示對比、載入／空白／錯誤／刪除確認狀態。
-- 完全離線，無網路權限。
+Soreada（蘇打閱讀）是一個免費、開源的 Android EPUB／TXT 閱讀器，為漫畫與文字閱讀而做。介面使用 Material 3，支援繁體中文、简体中文與 English。
 
-## 畫面
+### 功能
 
-| 書庫 | 全局設置 |
-| --- | --- |
-| ![書庫](docs/screenshots/library.png) | ![設置](docs/screenshots/settings.png) |
+- **漫畫 EPUB**：支援 EPUB 2／3 的圖像 spine，直接顯示圖片頁，也支援 XHTML 包一張圖的常見做法。
+- **文字閱讀**：TXT 自動辨識 UTF-8／UTF-16／GB18030；EPUB 文字書保留章節，支援字級調整與重新分頁。
+- **顯示效果**：護眼模式（暖色濾鏡，可調強度）、紙張顆粒（閱讀頁專用）、淺色／深色／跟隨系統。
+- **雙指縮放**：漫畫頁支援 1×–4×，放大後可單指拖動；縮放時暫停翻頁，換頁自動還原。
+- **書籤**：每本書可加多個書籤，進度條上方顯示圓點，點圓點直接跳頁；文字書以字元位置保存。
+- **書庫**：匯入、封面、閱讀進度、最近閱讀、書名／作者搜尋。
+- **首次開書提示**：第一次打開書籍時提示點中間開選單、點兩側翻頁、書籤與進度條跳轉，只出現一次。
+- **三語介面**：繁體中文、简体中文、English 即時切換。
 
-| 閱讀設定 | 書籤（進度條圓點） |
-| --- | --- |
-| ![閱讀設定](docs/screenshots/reader-settings.png) | ![書籤](docs/screenshots/bookmark.png) |
+### 摺疊屏與平板寬屏
 
-| 護眼模式 | 內屏橫向：左至右雙頁 |
-| --- | --- |
-| ![護眼模式](docs/screenshots/eyecare.png) | ![橫向漫畫](docs/screenshots/comic-landscape.png) |
+Soreada 依視窗寬高判斷版面，不綁定特定機型：
 
-![文字雙頁](docs/screenshots/text-landscape.png)
+- **內屏直向／手機**：完整一頁，不足處以白色留白。
+- **內屏橫向／平板寬屏**：左右並排兩頁，適合漫畫跨頁與長篇文字。
+- **外屏／窄視窗**：維持單頁，不會硬塞兩頁。
+- **展開、摺疊、旋轉**：保留目前頁；文字會依新寬度重新排版。
+- **RTL 漫畫**：右至左翻頁時，第一頁在右側；仍可手動切換為左至右。
 
-## 操作速查
+### 開發者想法
 
-| 操作 | 功能 |
-| --- | --- |
-| 左右滑動 | 翻頁 |
-| 點左／右側 30% | 上一頁／下一頁（RTL 時左右互換；縮放中只切換工具列） |
-| 點中間 | 顯示／隱藏工具列 |
-| 雙指張開／收合 | 漫畫頁放大／縮小（1×–4×） |
-| 放大後單指拖動 | 平移頁面 |
-| 右上書籤圖示 | 加入／移除目前頁書籤 |
-| 進度條上方圓點 | 點擊跳到該書籤 |
-| 齒輪（書庫） | 全局設置：語言、主題、護眼、顆粒 |
-| 齒輪（閱讀器） | 閱讀方向、單／雙頁、字級、護眼、顆粒 |
-| 放大鏡（書庫） | 搜尋書名／作者 |
+我想做一個免費、好用、設計現代的開源閱讀器。
 
-## 專案結構
+市面上的閱讀器，有些功能很強但介面停留在十年前；有些設計漂亮，卻把基本的閱讀體驗放在訂閱或廣告後面。Soreada 先從漫畫與文字閱讀出發，把翻頁、排版、摺疊屏與平板寬屏這些基本事情做好，再慢慢加功能。
 
-```text
-app/src/main/java/com/kanae/foldpage/
-├── format/      EPUB 解析、TXT 編碼偵測與切章、錯誤種類
-├── reader/      EPUB 圖像解碼快取、文字分頁器
-├── data/        書庫 JSON、進度、書籤、閱讀設定、App 設定
-├── ui/          書庫、閱讀器、全局設置、i18n、縮放／顆粒元件
-│   └── theme/   Material 3 主題與手動深色模式
-└── SoreadaApplication.kt
-```
+它會保持免費與開源，不會加入訂閱制。如果你有想支援的格式或使用場景，歡迎開 Issue。
 
-- 只用 AndroidX + Jetpack Compose + Material 3，沒有 Room、Coil、第三方 EPUB 函式庫。
-- 書庫資料：`files/foldpage/library.json`；書籍：`files/foldpage/books/`；封面：`files/foldpage/covers/`。
-- App 語言、主題、護眼／顆粒：`shared_prefs/app_settings.xml`；閱讀方向／字級：`shared_prefs/reader_settings.xml`。
+### 下載與安裝
 
-## 建置
+- APK 放在 [GitHub Releases](https://github.com/Amamiya-Kanae/Soreada/releases/latest)。
+- Android 8.0（API 26）以上。
+- Package：`com.kanae.soreada`（0.3.0 起；舊版 `com.kanae.foldpage` 可並存，但書庫不互通，需重新匯入）。
 
-需求：JDK 17、Android SDK 35（build-tools 35）、Gradle 8.9。本工作區已附工具鏈於 `../.tools/`。
+---
+
+<a id="简体中文"></a>
+## 简体中文
+
+### 简介
+
+Soreada（苏打阅读）是一个免费、开源的 Android EPUB／TXT 阅读器，为漫画与文字阅读而做。界面使用 Material 3，支持繁体中文、简体中文与 English。
+
+### 功能
+
+- **漫画 EPUB**：支持 EPUB 2／3 的图像 spine，直接显示图片页，也支持 XHTML 包一张图的常见做法。
+- **文字阅读**：TXT 自动识别 UTF-8／UTF-16／GB18030；EPUB 文字书保留章节，支持字号调整与重新分页。
+- **显示效果**：护眼模式（暖色滤镜，可调强度）、纸张颗粒（阅读页专用）、浅色／深色／跟随系统。
+- **双指缩放**：漫画页支持 1×–4×，放大后可单指拖动；缩放时暂停翻页，换页自动还原。
+- **书签**：每本书可添加多个书签，进度条上方显示圆点，点圆点直接跳页；文字书以字符位置保存。
+- **书库**：导入、封面、阅读进度、最近阅读、书名／作者搜索。
+- **首次开书提示**：第一次打开书籍时提示点中间开菜单、点两侧翻页、书签与进度条跳转，只出现一次。
+- **三语界面**：繁体中文、简体中文、English 即时切换。
+
+### 折叠屏与平板宽屏
+
+Soreada 根据窗口宽高判断版面，不绑定特定机型：
+
+- **内屏竖向／手机**：完整一页，不足处用白色留白。
+- **内屏横向／平板宽屏**：左右并排两页，适合漫画跨页与长篇文字。
+- **外屏／窄窗口**：保持单页，不会硬塞两页。
+- **展开、折叠、旋转**：保留当前页；文字会按新宽度重新排版。
+- **RTL 漫画**：从右至左翻页时，第一页在右侧；仍可手动切换为从左至右。
+
+### 开发者想法
+
+我想做一个免费、好用、设计现代的开源阅读器。
+
+市面上的阅读器，有些功能很强但界面停留在十年前；有些设计漂亮，却把基本的阅读体验放在订阅或广告后面。Soreada 先从漫画与文字阅读出发，把翻页、排版、折叠屏与平板宽屏这些基本事情做好，再慢慢加功能。
+
+它会保持免费与开源，不会加入订阅制。如果你有想支持的格式或使用场景，欢迎开 Issue。
+
+### 下载与安装
+
+- APK 放在 [GitHub Releases](https://github.com/Amamiya-Kanae/Soreada/releases/latest)。
+- Android 8.0（API 26）以上。
+- Package：`com.kanae.soreada`（0.3.0 起；旧版 `com.kanae.foldpage` 可共存，但书库不互通，需要重新导入）。
+
+---
+
+<a id="english"></a>
+## English
+
+### About
+
+Soreada is a free, open-source EPUB/TXT reader for Android, built for comics and long-form text. It uses Material 3 and ships in Traditional Chinese, Simplified Chinese, and English.
+
+### Features
+
+- **Comic EPUB**: Supports EPUB 2/3 image spines, including XHTML pages that wrap a single image.
+- **Text reading**: Detects UTF-8, UTF-16, and GB18030 TXT files; keeps EPUB chapters and supports font sizing with reflow.
+- **Display**: Eye care (warm filter with adjustable strength), paper grain on reading pages, light/dark/system theme.
+- **Pinch zoom**: 1×–4× on comic pages, with one-finger pan while zoomed; paging pauses during zoom and resets on page change.
+- **Bookmarks**: Multiple bookmarks per book, shown as dots above the progress bar; tap a dot to jump. Text bookmarks store character offsets.
+- **Library**: Import, covers, reading progress, recent order, and title/author search.
+- **First-run tips**: On the first book opened, a one-time card explains the middle tap, side taps, bookmarks, and progress-bar jumps.
+- **Three languages**: Switch between Traditional Chinese, Simplified Chinese, and English at runtime.
+
+### Foldables and wide tablets
+
+Soreada chooses its layout from the current window size, not a device model:
+
+- **Inner screen portrait / phone**: One full page, with white letterboxing.
+- **Inner screen landscape / wide tablet**: Two pages side by side, for spreads and long-form text.
+- **Cover screen / narrow window**: Stays single-page instead of squeezing two pages in.
+- **Unfold, fold, rotate**: Keeps the current page; text reflows to the new width.
+- **RTL comics**: In right-to-left mode the first page sits on the right; left-to-right remains available.
+
+### Why I built this
+
+I wanted a free, open-source reader that feels modern.
+
+Many readers are powerful but look dated; others look great but hide basic reading behind subscriptions or ads. Soreada starts with comics and text, gets paging, typography, foldables, and wide tablets right first, then grows from there.
+
+It will stay free and open source, with no subscription. If there is a format or use case you want supported, open an issue.
+
+### Download
+
+- APK: [GitHub Releases](https://github.com/Amamiya-Kanae/Soreada/releases/latest).
+- Android 8.0 (API 26) or newer.
+- Package: `com.kanae.soreada` (since 0.3.0; the older `com.kanae.foldpage` app can coexist, but libraries are separate and books must be re-imported).
+
+---
+
+## Build / 建置
+
+Requirements: JDK 17, Android SDK 35, Gradle 8.9 (the wrapper is included).
 
 ```bash
-cd foldpage
-export JAVA_HOME="/Users/kanae/Documents/DSH/.tools/jdk/Contents/Home"
-export ANDROID_HOME="/Users/kanae/Documents/DSH/.tools/sdk"
-export GRADLE_USER_HOME="/Users/kanae/Documents/DSH/.tools/gradle-home"
-../.tools/gradle/gradle-8.9/bin/gradle assembleRelease
+git clone https://github.com/Amamiya-Kanae/Soreada.git
+cd Soreada
+./gradlew assembleDebug
 ```
 
-產物：`app/build/outputs/apk/release/app-release.apk`。
+For a release build, use your own signing key; the maintainer's keystore is not in this repository. Android Studio can also open the project directly.
 
-`signing/foldpage-release.keystore`是這版的自簽憑證，密碼在 `app/build.gradle`，僅供本機測試。要上架或長期更新請換成自己的 keystore 並妥善保管；換 key 會無法覆蓋安裝舊版。
+## Current scope / 目前範圍
 
-## 已知限制
+Android only. DRM-protected EPUB, CBZ/CBR, PDF, vertical writing, and iOS are not supported yet.
 
-- **尚未在實機小米 18 Fold 驗證**；目前全部證據來自 Android 15 摺疊屏模擬器與外屏尺寸模擬。
-- 縮放只支援漫畫頁，沒有雙擊縮放、縮放比例指示或「一鍵還原」按鈕；縮回 1× 或換頁會還原。
-- 書籤只有進度條圓點與目前頁切換，沒有書籤列表／命名／排序。
-- 搜尋只搜尋目前書庫的書名與作者，不搜尋書內文字。
-- 護眼模式是暖色覆蓋層（會連圖片一起染色，這是「整體屏幕」的預期行為）；紙張顆粒只覆蓋閱讀頁。
-- 閱讀頁固定紙白色；手動深色模式套用書庫與設定，閱讀頁仍為紙白（搭配護眼模式）。
-- 不支援 DRM／加密 EPUB、CBZ／CBR／PDF、直排文字、頁面裁切、跨頁對齊、TTS、書內全文搜尋。
-- 英文書名/作者在中文介面可能顯示為原文；這是資料本身，不是翻譯缺漏。
+## License / 授權
 
-## 驗證紀錄（2026-10-23）
+MIT. See [LICENSE](LICENSE).
 
-環境：Android 15（API 35）arm64 模擬器，7.6 吋摺疊屏，1768×2208 @ 420dpi。
+## Developer
 
-- `lintRelease` 0 error；release APK `apksigner verify` 通過；release manifest 不含 debug 測試 Activity。
-- 書庫：搜尋（無結果狀態）、設定入口、深色模式、兩種語言切換（繁中／簡中／English）。
-- 閱讀：LTR 預設、漫畫單頁／雙頁、文字 EPUB 雙頁、翻頁、頁碼滑桿。
-- **雙指縮放**：用 evdev 注入真實多點觸控，驗證 1×→約 3×、放大後單指平移、縮小回 1×；縮放時沒有誤翻頁。
-- **書籤**：漫畫與文字書加入書籤、寫入 JSON、進度條圓點、點圓點跳頁。
-- **顯示效果**：護眼模式與紙張顆粒開關、強度滑桿、全域套用範圍。
-- 舊版 `AUTO` 方向遷移為 LTR；bookmarks 欄位向後兼容舊 `library.json`。
-- logcat crash buffer 無紀錄。
-
-未驗證：實機、超大檔案、DRM、圖文混合 EPUB、TalkBack 實測。
-
-## 保留原代碼與 GitHub
-
-- 已在本目錄建立 **git repo**，第一個 commit 是 v0.1.0（FoldPage）baseline，之後的 v0.2.0 改動都有歷史可追溯；`signing/`、`dist/`、`local.properties` 已在 `.gitignore` 排除，避免把金鑰與 APK 推上公開 repo。
-- 尚未加入 GitHub remote。之後要開源時，可直接在此 repo 建立 GitHub repository 再 push；我會另外給你逐步指令。
-
-## iOS
-
-尚未開始。`format/` 與文字分頁邏輯已與 UI 分離，之後可抽成 Kotlin Multiplatform 共用；UI 可用 Compose Multiplatform 或 SwiftUI 重寫，iPhone 摺疊機用 size class／雙欄容器做「直向一頁、橫向兩頁」。目前沒有時程。
-
-## 授權
-
-個人專案，未指定開源授權。示範檔案為本專案自行生成，可自由測試使用。
-
-開發者：[Amamiya-Kanae](https://github.com/Amamiya-Kanae)
+[Amamiya-Kanae](https://github.com/Amamiya-Kanae) · [Issues](https://github.com/Amamiya-Kanae/Soreada/issues)
