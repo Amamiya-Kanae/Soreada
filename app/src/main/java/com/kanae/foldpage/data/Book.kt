@@ -1,5 +1,6 @@
 package com.kanae.foldpage.data
 
+import org.json.JSONArray
 import org.json.JSONObject
 
 enum class BookFormat { EPUB, TXT }
@@ -37,6 +38,7 @@ data class Book(
     val position: Int,
     val total: Int,
     val pageDirection: PageDirection,
+    val bookmarks: List<Bookmark> = emptyList(),
 ) {
     val progress: Float
         get() = if (total <= 0) 0f else (position.toFloat() / total.toFloat()).coerceIn(0f, 1f)
@@ -54,6 +56,9 @@ data class Book(
         put("position", position)
         put("total", total)
         put("pageDirection", pageDirection.name)
+        put("bookmarks", JSONArray().also { array ->
+            bookmarks.forEach { array.put(it.toJson()) }
+        })
     }
 
     companion object {
@@ -73,6 +78,12 @@ data class Book(
                 pageDirection = runCatching {
                     PageDirection.valueOf(json.optString("pageDirection", "LTR"))
                 }.getOrDefault(PageDirection.LTR),
+                bookmarks = runCatching {
+                    val array = json.optJSONArray("bookmarks") ?: return@runCatching emptyList()
+                    (0 until array.length()).mapNotNull { index ->
+                        runCatching { Bookmark.fromJson(array.getJSONObject(index)) }.getOrNull()
+                    }.sortedBy { it.position }
+                }.getOrDefault(emptyList()),
             )
         }.getOrNull()
     }

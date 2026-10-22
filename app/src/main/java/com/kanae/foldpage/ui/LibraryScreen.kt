@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import android.app.Activity
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,11 +28,13 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -47,6 +48,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -64,7 +66,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -73,16 +76,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.core.view.WindowCompat
 import com.kanae.foldpage.data.Book
 import com.kanae.foldpage.data.BookFormat
+import com.kanae.foldpage.ui.i18n.LocalUiStrings
+import com.kanae.foldpage.ui.i18n.UiKey
+import com.kanae.foldpage.ui.theme.LocalAppDarkTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -97,24 +103,47 @@ fun LibraryScreen(
     onImport: (Uri) -> Unit,
     onDelete: (Book) -> Unit,
     onRestart: (Book) -> Unit,
+    onOpenSettings: () -> Unit,
 ) {
+    val strings = LocalUiStrings.current
     val context = LocalContext.current
     val view = LocalView.current
-    val darkTheme = isSystemInDarkTheme()
+    val darkTheme = LocalAppDarkTheme.current
+    val keyboard = LocalSoftwareKeyboardController.current
+    var searchActive by remember { mutableStateOf(false) }
+    var query by remember { mutableStateOf("") }
+    var pendingDelete by remember { mutableStateOf<Book?>(null) }
+    var pendingRestart by remember { mutableStateOf<Book?>(null) }
+    val focusRequester = remember { FocusRequester() }
+
     SideEffect {
-        (context.findActivity())?.window?.let { window ->
+        context.findActivity()?.window?.let { window ->
             WindowCompat.getInsetsController(window, view).apply {
                 isAppearanceLightStatusBars = !darkTheme
                 isAppearanceLightNavigationBars = !darkTheme
             }
         }
     }
+
+    LaunchedEffect(searchActive) {
+        if (searchActive) focusRequester.requestFocus() else keyboard?.hide()
+    }
+
     val picker = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) onImport(uri)
     }
-    var showAbout by remember { mutableStateOf(false) }
-    var pendingDelete by remember { mutableStateOf<Book?>(null) }
-    var pendingRestart by remember { mutableStateOf<Book?>(null) }
+
+    val trimmedQuery = query.trim()
+    val visibleBooks = remember(state.books, trimmedQuery) {
+        if (trimmedQuery.isEmpty()) {
+            state.books
+        } else {
+            state.books.filter { book ->
+                book.title.contains(trimmedQuery, ignoreCase = true) ||
+                    book.author?.contains(trimmedQuery, ignoreCase = true) == true
+            }
+        }
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -122,10 +151,14 @@ fun LibraryScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("摺頁", fontWeight = FontWeight.Bold)
+                        Text(strings.get(UiKey.APP_NAME), fontWeight = FontWeight.Bold)
                         if (state.books.isNotEmpty()) {
                             Text(
-                                "共 ${state.books.size} 本書",
+                                if (state.books.size == 1) {
+                                    strings.get(UiKey.BOOKS_COUNT_ONE)
+                                } else {
+                                    strings.get(UiKey.BOOKS_COUNT, state.books.size)
+                                },
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -133,8 +166,32 @@ fun LibraryScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { showAbout = true }) {
-                        Icon(Icons.Filled.Info, contentDescription = "關於摺頁")
+                    if (searchActive) {
+                        IconButton(onClick = {
+                            searchActive = false
+                            query = ""
+                            keyboard?.hide()
+                        }) {
+                            Icon(
+                                Icons.Filled.Clear,
+                                contentDescription = strings.get(UiKey.CLOSE_SEARCH),
+                            )
+                        }
+                    } else {
+                        IconButton(onClick = {
+                            searchActive = true
+                        }) {
+                            Icon(
+                                Icons.Filled.Search,
+                                contentDescription = strings.get(UiKey.SEARCH_DESC),
+                            )
+                        }
+                        IconButton(onClick = onOpenSettings) {
+                            Icon(
+                                Icons.Filled.Settings,
+                                contentDescription = strings.get(UiKey.SETTINGS_DESC),
+                            )
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -146,69 +203,111 @@ fun LibraryScreen(
             ExtendedFloatingActionButton(
                 onClick = { if (!state.importing) picker.launch(arrayOf("*/*")) },
                 icon = { Icon(Icons.Filled.Add, contentDescription = null) },
-                text = { Text("匯入書籍") },
+                text = { Text(strings.get(UiKey.IMPORT_BOOKS)) },
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
     ) { innerPadding ->
-        Box(
+        Column(
             Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
         ) {
-            when {
-                state.loading && state.books.isEmpty() -> {
-                    Column(
-                        modifier = Modifier.align(Alignment.Center),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        CircularProgressIndicator()
-                        Spacer(Modifier.height(16.dp))
-                        Text("正在整理書庫…", color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    }
-                }
-                state.books.isEmpty() -> {
-                    EmptyLibrary(onPick = { picker.launch(arrayOf("*/*")) })
-                }
-                else -> {
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(minSize = 150.dp),
-                        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 112.dp),
-                        horizontalArrangement = Arrangement.spacedBy(14.dp),
-                        verticalArrangement = Arrangement.spacedBy(18.dp),
-                        modifier = Modifier.fillMaxSize(),
-                    ) {
-                        items(state.books, key = { it.id }) { book ->
-                            BookCard(
-                                book = book,
-                                onOpen = { onOpenBook(book) },
-                                onRestart = { pendingRestart = book },
-                                onDelete = { pendingDelete = book },
+            if (searchActive) {
+                OutlinedTextField(
+                    value = query,
+                    onValueChange = { query = it },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 4.dp)
+                        .focusRequester(focusRequester),
+                    singleLine = true,
+                    placeholder = { Text(strings.get(UiKey.SEARCH_HINT)) },
+                    leadingIcon = {
+                        Icon(Icons.Filled.Search, contentDescription = null)
+                    },
+                    trailingIcon = {
+                        if (query.isNotEmpty()) {
+                            IconButton(onClick = { query = "" }) {
+                                Icon(
+                                    Icons.Filled.Clear,
+                                    contentDescription = strings.get(UiKey.CLOSE_SEARCH),
+                                )
+                            }
+                        }
+                    },
+                    shape = RoundedCornerShape(28.dp),
+                )
+            }
+
+            Box(Modifier.weight(1f).fillMaxWidth()) {
+                when {
+                    state.loading && state.books.isEmpty() -> {
+                        Column(
+                            modifier = Modifier.align(Alignment.Center),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            CircularProgressIndicator()
+                            Spacer(Modifier.height(16.dp))
+                            Text(
+                                strings.get(UiKey.LOADING_LIBRARY),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
                     }
-                }
-            }
-
-            if (state.importing) {
-                Box(
-                    Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.28f)),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Surface(
-                        shape = RoundedCornerShape(24.dp),
-                        color = MaterialTheme.colorScheme.surface,
-                        tonalElevation = 3.dp,
-                    ) {
-                        Row(
-                            Modifier.padding(horizontal = 24.dp, vertical = 20.dp),
-                            verticalAlignment = Alignment.CenterVertically,
+                    state.books.isEmpty() -> {
+                        EmptyLibrary(
+                            onPick = { picker.launch(arrayOf("*/*")) },
+                        )
+                    }
+                    visibleBooks.isEmpty() -> {
+                        NoResults()
+                    }
+                    else -> {
+                        LazyVerticalGrid(
+                            columns = GridCells.Adaptive(minSize = 150.dp),
+                            contentPadding = PaddingValues(
+                                start = 16.dp,
+                                end = 16.dp,
+                                top = 8.dp,
+                                bottom = 112.dp,
+                            ),
+                            horizontalArrangement = Arrangement.spacedBy(14.dp),
+                            verticalArrangement = Arrangement.spacedBy(18.dp),
+                            modifier = Modifier.fillMaxSize(),
                         ) {
-                            CircularProgressIndicator(Modifier.size(24.dp), strokeWidth = 2.5.dp)
-                            Spacer(Modifier.width(16.dp))
-                            Text("正在匯入書籍…")
+                            items(visibleBooks, key = { it.id }) { book ->
+                                BookCard(
+                                    book = book,
+                                    onOpen = { onOpenBook(book) },
+                                    onRestart = { pendingRestart = book },
+                                    onDelete = { pendingDelete = book },
+                                )
+                            }
+                        }
+                    }
+                }
+
+                if (state.importing) {
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .background(Color.Black.copy(alpha = 0.28f)),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Surface(
+                            shape = RoundedCornerShape(24.dp),
+                            color = MaterialTheme.colorScheme.surface,
+                            tonalElevation = 3.dp,
+                        ) {
+                            Row(
+                                Modifier.padding(horizontal = 24.dp, vertical = 20.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                CircularProgressIndicator(Modifier.size(24.dp), strokeWidth = 2.5.dp)
+                                Spacer(Modifier.width(16.dp))
+                                Text(strings.get(UiKey.IMPORTING))
+                            }
                         }
                     }
                 }
@@ -220,10 +319,8 @@ fun LibraryScreen(
         AlertDialog(
             onDismissRequest = { pendingDelete = null },
             icon = { Icon(Icons.Filled.Delete, contentDescription = null) },
-            title = { Text("移除這本書？") },
-            text = {
-                Text("《${book.title}》會從書庫移除。你手機上的原始檔案不受影響。")
-            },
+            title = { Text(strings.get(UiKey.REMOVE_TITLE)) },
+            text = { Text(strings.get(UiKey.REMOVE_MESSAGE, book.title)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -231,11 +328,13 @@ fun LibraryScreen(
                         pendingDelete = null
                     },
                 ) {
-                    Text("移除", color = MaterialTheme.colorScheme.error)
+                    Text(strings.get(UiKey.REMOVE), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { pendingDelete = null }) { Text("取消") }
+                TextButton(onClick = { pendingDelete = null }) {
+                    Text(strings.get(UiKey.CANCEL))
+                }
             },
         )
     }
@@ -244,8 +343,8 @@ fun LibraryScreen(
         AlertDialog(
             onDismissRequest = { pendingRestart = null },
             icon = { Icon(Icons.Filled.Refresh, contentDescription = null) },
-            title = { Text("從第一頁重新開始？") },
-            text = { Text("《${book.title}》目前的閱讀進度會被清除。") },
+            title = { Text(strings.get(UiKey.RESTART_TITLE)) },
+            text = { Text(strings.get(UiKey.RESTART_MESSAGE, book.title)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -253,35 +352,52 @@ fun LibraryScreen(
                         pendingRestart = null
                     },
                 ) {
-                    Text("重新開始")
+                    Text(strings.get(UiKey.RESTART))
                 }
             },
             dismissButton = {
-                TextButton(onClick = { pendingRestart = null }) { Text("取消") }
-            },
-        )
-    }
-
-    if (showAbout) {
-        AlertDialog(
-            onDismissRequest = { showAbout = false },
-            title = { Text("摺頁 0.1.0") },
-            text = {
-                Text(
-                    "為漫畫而生的 EPUB／TXT 閱讀器。\n\n" +
-                        "直向顯示完整一頁；橫向或展開摺疊屏時，自動並排顯示左右兩頁，留白以白色填充。\n\n" +
-                        "支援 EPUB（圖像頁與文字）、TXT（UTF-8／GBK 自動辨識）。",
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = { showAbout = false }) { Text("知道啦") }
+                TextButton(onClick = { pendingRestart = null }) {
+                    Text(strings.get(UiKey.CANCEL))
+                }
             },
         )
     }
 }
 
 @Composable
+private fun NoResults() {
+    val strings = LocalUiStrings.current
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Icon(
+            Icons.Filled.Search,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.size(44.dp),
+        )
+        Spacer(Modifier.height(16.dp))
+        Text(
+            strings.get(UiKey.NO_RESULTS),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.SemiBold,
+        )
+        Spacer(Modifier.height(6.dp))
+        Text(
+            strings.get(UiKey.NO_RESULTS_HINT),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
 private fun EmptyLibrary(onPick: () -> Unit) {
+    val strings = LocalUiStrings.current
     val primary = MaterialTheme.colorScheme.primary
     val primaryContainer = MaterialTheme.colorScheme.primaryContainer
     val tertiary = MaterialTheme.colorScheme.tertiary
@@ -329,10 +445,14 @@ private fun EmptyLibrary(onPick: () -> Unit) {
             )
         }
         Spacer(Modifier.height(24.dp))
-        Text("書庫還是空的", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold)
+        Text(
+            strings.get(UiKey.EMPTY_TITLE),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.SemiBold,
+        )
         Spacer(Modifier.height(8.dp))
         Text(
-            "匯入 EPUB 漫畫或 TXT 小說，\n直向一頁、橫向兩頁，慢慢看。",
+            strings.get(UiKey.EMPTY_SUBTITLE),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = androidx.compose.ui.text.style.TextAlign.Center,
@@ -341,11 +461,11 @@ private fun EmptyLibrary(onPick: () -> Unit) {
         Button(onClick = onPick) {
             Icon(Icons.Filled.Add, contentDescription = null)
             Spacer(Modifier.width(8.dp))
-            Text("選擇檔案")
+            Text(strings.get(UiKey.CHOOSE_FILE))
         }
         Spacer(Modifier.height(12.dp))
         Text(
-            "支援 .epub 與 .txt",
+            strings.get(UiKey.SUPPORTED_FORMATS),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -359,6 +479,7 @@ private fun BookCard(
     onRestart: () -> Unit,
     onDelete: () -> Unit,
 ) {
+    val strings = LocalUiStrings.current
     var menuOpen by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val coverFile = remember(book.coverFileName, context) {
@@ -372,7 +493,7 @@ private fun BookCard(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         modifier = Modifier.semantics {
-            contentDescription = "《${book.title}》，已讀 $percent%"
+            contentDescription = "${book.title}，${strings.get(UiKey.READ_PERCENT, percent)}"
         },
     ) {
         Column {
@@ -395,14 +516,14 @@ private fun BookCard(
                     ) {
                         Icon(
                             Icons.Filled.MoreVert,
-                            contentDescription = "《${book.title}》更多選項",
+                            contentDescription = strings.get(UiKey.MORE_OPTIONS, book.title),
                             tint = Color.White,
                             modifier = Modifier.size(20.dp),
                         )
                     }
                     DropdownMenu(expanded = menuOpen, onDismissRequest = { menuOpen = false }) {
                         DropdownMenuItem(
-                            text = { Text("繼續閱讀") },
+                            text = { Text(strings.get(UiKey.CONTINUE_READING)) },
                             leadingIcon = { Icon(Icons.Filled.PlayArrow, contentDescription = null) },
                             onClick = {
                                 menuOpen = false
@@ -410,7 +531,7 @@ private fun BookCard(
                             },
                         )
                         DropdownMenuItem(
-                            text = { Text("從第一頁重新開始") },
+                            text = { Text(strings.get(UiKey.RESTART_READING)) },
                             leadingIcon = { Icon(Icons.Filled.Refresh, contentDescription = null) },
                             onClick = {
                                 menuOpen = false
@@ -418,7 +539,7 @@ private fun BookCard(
                             },
                         )
                         DropdownMenuItem(
-                            text = { Text("從書庫移除") },
+                            text = { Text(strings.get(UiKey.REMOVE_FROM_LIBRARY)) },
                             leadingIcon = { Icon(Icons.Filled.Delete, contentDescription = null) },
                             onClick = {
                                 menuOpen = false
@@ -465,7 +586,7 @@ private fun BookCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
-                        "$percent%",
+                        strings.get(UiKey.READ_PERCENT, percent),
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary,
@@ -478,6 +599,7 @@ private fun BookCard(
 
 @Composable
 private fun BookCover(book: Book, coverFile: File?) {
+    val strings = LocalUiStrings.current
     var coverBitmap by remember(coverFile?.absolutePath) { mutableStateOf<Bitmap?>(null) }
     LaunchedEffect(coverFile?.absolutePath) {
         coverBitmap = withContext(Dispatchers.IO) {
@@ -490,7 +612,7 @@ private fun BookCover(book: Book, coverFile: File?) {
     if (loaded != null) {
         Image(
             bitmap = loaded.asImageBitmap(),
-            contentDescription = "《${book.title}》封面",
+            contentDescription = strings.get(UiKey.COVER_OF, book.title),
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
         )

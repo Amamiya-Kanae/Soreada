@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kanae.foldpage.data.Book
+import com.kanae.foldpage.data.Bookmark
 import com.kanae.foldpage.data.ContentKind
 import com.kanae.foldpage.data.DirectionSetting
 import com.kanae.foldpage.data.DualMode
@@ -13,6 +14,8 @@ import com.kanae.foldpage.data.PageDirection
 import com.kanae.foldpage.data.ReaderSettings
 import com.kanae.foldpage.data.ReaderSettingsStore
 import com.kanae.foldpage.format.BookContent
+import com.kanae.foldpage.format.BookParseException
+import com.kanae.foldpage.format.ParseError
 import com.kanae.foldpage.format.EpubParser
 import com.kanae.foldpage.format.ImagePage
 import com.kanae.foldpage.format.TextParser
@@ -31,9 +34,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+data class ReaderFailure(
+    val error: ParseError,
+    val detail: String? = null,
+)
+
 data class ReaderUiState(
     val loading: Boolean = true,
-    val error: String? = null,
+    val error: ReaderFailure? = null,
     val book: Book? = null,
     val contentKind: ContentKind = ContentKind.IMAGE,
     val imagePages: List<ImagePage> = emptyList(),
@@ -46,6 +54,7 @@ data class ReaderUiState(
     val autoDirection: PageDirection = PageDirection.LTR,
     val totalChars: Int = 0,
     val settings: ReaderSettings = ReaderSettings(),
+    val bookmarks: List<Bookmark> = emptyList(),
 ) {
     val isText: Boolean get() = contentKind == ContentKind.TEXT
 }
@@ -80,9 +89,18 @@ class ReaderViewModel(
         loadJob = viewModelScope.launch {
             _state.update { it.copy(loading = true, error = null) }
             try {
-                val book = repository.getBook(bookId) ?: error("找不到這本書，可能已被移除。")
+                val book = repository.getBook(bookId)
+                    ?: throw BookParseException(
+                        ParseError.BOOK_MISSING,
+                        "找不到這本書，可能已被移除。",
+                    )
                 val file = repository.bookFile(book)
-                if (!file.exists()) error("書籍檔案不存在，請重新匯入。")
+                if (!file.exists()) {
+                    throw BookParseException(
+                        ParseError.FILE_MISSING,
+                        "書籍檔案不存在，請重新匯入。",
+                    )
+                }
 
                 val parsed = when (book.format) {
                     com.kanae.foldpage.data.BookFormat.EPUB -> EpubParser.parse(file)
@@ -114,6 +132,7 @@ class ReaderViewModel(
                             direction = direction,
                             autoDirection = parsed.direction,
                             settings = settings,
+                            bookmarks = book.bookmarks,
                         )
                     }
                     is BookContent.Text -> {
@@ -129,14 +148,19 @@ class ReaderViewModel(
                             autoDirection = parsed.direction,
                             totalChars = content.totalChars,
                             settings = settings,
+                            bookmarks = book.bookmarks,
                         )
                     }
                 }
                 repository.markOpened(bookId)
             } catch (e: Exception) {
+                val parse = e as? BookParseException
                 _state.value = ReaderUiState(
                     loading = false,
-                    error = e.message ?: "無法開啟這本書。",
+                    error = ReaderFailure(
+                        error = parse?.kind ?: ParseError.UNKNOWN,
+                        detail = e.message,
+                    ),
                     book = _state.value.book,
                 )
             }
@@ -231,6 +255,36 @@ class ReaderViewModel(
         val loader = imageLoader ?: return
         viewModelScope.launch(Dispatchers.IO) {
             entries.forEach { entry -> loader.load(entry, width, height) }
+        }
+    }
+
+    fun addBookmark(position: Int) {
+        val current = _state.value.bookmarks
+        if (current.any { it.position == position }) return
+        persistBookmarks(current + Bookmark(position, System.currentTimeMillis()))
+    }
+
+    fun removeBookmark(position: Int) {
+        persistBookmarks(_state.value.bookmarks.filterNot { it.position == position })
+    }
+
+    fun jumpToBookmark(position: Int) {
+        if (_state.value.isText) {
+            val pages = _state.value.textPages
+            if (pages.isEmpty()) return
+            val index = pages.indexOfLast { it.absStart <= position }.coerceAtLeast(0)
+            jumpTo(index)
+        } else {
+            jumpTo(position)
+        }
+    }
+
+    private fun persistBookmarks(bookmarks: List<Bookmark>) {
+        val book = _state.value.book ?: return
+        val sorted = bookmarks.sortedBy { it.position }
+        _state.update { it.copy(bookmarks = sorted, book = book.copy(bookmarks = sorted)) }
+        persistScope.launch {
+            repository.updateBookmarks(book.id, sorted)
         }
     }
 

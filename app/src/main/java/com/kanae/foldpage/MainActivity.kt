@@ -9,8 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.kanae.foldpage.ui.FoldPageRoot
-import com.kanae.foldpage.ui.theme.FoldPageTheme
+import com.kanae.foldpage.ui.SoreadaRoot
 
 class MainActivity : ComponentActivity() {
 
@@ -22,14 +21,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         handleIntent(intent)
         setContent {
-            FoldPageTheme {
-                FoldPageRoot(
-                    externalUri = externalUri,
-                    requestedBookId = requestedBookId,
-                    onExternalUriConsumed = { externalUri = null },
-                    onRequestedBookConsumed = { requestedBookId = null },
-                )
-            }
+            SoreadaRoot(
+                externalUri = externalUri,
+                requestedBookId = requestedBookId,
+                onExternalUriConsumed = { externalUri = null },
+                onRequestedBookConsumed = { requestedBookId = null },
+            )
         }
     }
 

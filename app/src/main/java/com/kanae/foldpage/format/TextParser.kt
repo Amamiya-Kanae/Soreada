@@ -14,7 +14,7 @@ object TextParser {
         val text = normalize(TextDecoding.decode(file.readBytes()))
         val sections = splitSections(text)
         if (sections.isEmpty()) {
-            throw BookParseException("這個文字檔看起來是空的。")
+            throw BookParseException(ParseError.TXT_EMPTY, "這個文字檔看起來是空的。")
         }
         return ParsedBook(
             title = fallbackTitle,

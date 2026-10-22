@@ -4,26 +4,71 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- 書頁 -->
+    <!-- 汽水氣泡的光暈 -->
     <path
-        android:fillColor="#FFF8EF"
-        android:pathData="M36,25 L67,25 L81,39 L81,83 L36,83 Z" />
-    <!-- 摺角 -->
+        android:fillColor="#FFFFFF"
+        android:fillAlpha="0.55"
+        android:pathData="M19,52 a35,35 0 1,0 70,0 a35,35 0 1,0 -70,0" />
+
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.88"
+        android:scaleY="0.88"
+        android:translateY="3">
+        <!-- 書本封面 -->
+        <path
+            android:fillColor="#2C5A5E"
+            android:pathData="M54,29 C46,25.5 37,24.5 29,26.5 C27.3,27 26,28.6 26,30.5 L26,72.5 C26,74.6 27.8,76.1 29.8,75.7 C37,74.2 46,74.8 54,78.5 C62,74.8 71,74.2 78.2,75.7 C80.2,76.1 82,74.6 82,72.5 L82,30.5 C82,28.6 80.7,27 79,26.5 C71,24.5 62,25.5 54,29 Z" />
+
+        <!-- 書頁 -->
+        <path
+            android:fillColor="#FFF9EC"
+            android:pathData="M54,33.5 C47,30.5 39,29.6 32.5,31.1 L32.5,68.4 C39,67.1 47,67.9 54,71.3 Z" />
+        <path
+            android:fillColor="#FFF9EC"
+            android:pathData="M54,33.5 C61,30.5 69,29.6 75.5,31.1 L75.5,68.4 C69,67.1 61,67.9 54,71.3 Z" />
+
+        <!-- 書脊 -->
+        <path
+            android:fillColor="#E7D8BF"
+            android:pathData="M53.2,33.5 h1.6 v38 h-1.6 z" />
+
+        <!-- 頁面文字線 -->
+        <path
+            android:fillColor="#A9CEC4"
+            android:pathData="M37.5,39 h11 v1.8 h-11 z" />
+        <path
+            android:fillColor="#A9CEC4"
+            android:pathData="M37.5,46 h11 v1.8 h-11 z" />
+        <path
+            android:fillColor="#A9CEC4"
+            android:pathData="M37.5,53 h11 v1.8 h-11 z" />
+        <path
+            android:fillColor="#A9CEC4"
+            android:pathData="M37.5,60 h8 v1.8 h-8 z" />
+        <path
+            android:fillColor="#A9CEC4"
+            android:pathData="M59.5,39 h11 v1.8 h-11 z" />
+        <path
+            android:fillColor="#A9CEC4"
+            android:pathData="M59.5,46 h11 v1.8 h-11 z" />
+        <path
+            android:fillColor="#A9CEC4"
+            android:pathData="M59.5,53 h11 v1.8 h-11 z" />
+        <path
+            android:fillColor="#A9CEC4"
+            android:pathData="M59.5,60 h8 v1.8 h-8 z" />
+    </group>
+
+    <!-- 蘇打氣泡 -->
     <path
-        android:fillColor="#D8CCBC"
-        android:pathData="M67,25 L81,39 L67,39 Z" />
-    <!-- 書脊 -->
+        android:fillColor="#FF9E89"
+        android:pathData="M64,24 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0" />
     <path
-        android:fillColor="#C7B9A6"
-        android:pathData="M36,25 L36,83 L31,78 L31,30 Z" />
-    <!-- 文字行 -->
+        android:fillColor="#67C3B7"
+        android:pathData="M74.2,30 a2.8,2.8 0 1,0 5.6,0 a2.8,2.8 0 1,0 -5.6,0" />
     <path
-        android:fillColor="#2F3B57"
-        android:pathData="M44,49 L73,49 L73,53 L44,53 Z" />
-    <path
-        android:fillColor="#2F3B57"
-        android:pathData="M44,59 L73,59 L73,63 L44,63 Z" />
-    <path
-        android:fillColor="#2F3B57"
-        android:pathData="M44,69 L62,69 L62,73 L44,73 Z" />
+        android:fillColor="#9DD8CE"
+        android:pathData="M56.8,20 a2.2,2.2 0 1,0 4.4,0 a2.2,2.2 0 1,0 -4.4,0" />
 </vector>

@@ -35,24 +35,24 @@ object EpubParser {
         } catch (e: BookParseException) {
             throw e
         } catch (e: Exception) {
-            throw BookParseException("EPUB 檔案讀取失敗，檔案可能損壞或格式不正確。", e)
+            throw BookParseException(ParseError.FILE_READ, "EPUB 檔案讀取失敗，檔案可能損壞或格式不正確。", e)
         }
     }
 
     private fun parseZip(zip: ZipFile): ParsedBook {
         val containerPath = "META-INF/container.xml"
         val containerBytes = readEntry(zip, containerPath, MAX_DOCUMENT_BYTES)
-            ?: throw BookParseException("這不是完整的 EPUB：缺少 META-INF/container.xml。")
+            ?: throw BookParseException(ParseError.EPUB_CONTAINER, "這不是完整的 EPUB：缺少 META-INF/container.xml。")
 
         val opfPath = findRootfile(TextDecoding.decodeMarkup(containerBytes))
-            ?: throw BookParseException("EPUB 缺少內容目錄（OPF）。")
+            ?: throw BookParseException(ParseError.EPUB_OPF, "EPUB 缺少內容目錄（OPF）。")
 
         val opfBytes = readEntry(zip, opfPath, MAX_DOCUMENT_BYTES)
-            ?: throw BookParseException("找不到 EPUB 的內容目錄（OPF）。")
+            ?: throw BookParseException(ParseError.EPUB_OPF, "找不到 EPUB 的內容目錄（OPF）。")
         val opf = parseOpf(TextDecoding.decodeMarkup(opfBytes), opfPath)
 
         if (opf.spineIds.isEmpty()) {
-            throw BookParseException("這個 EPUB 沒有任何可閱讀的章節。")
+            throw BookParseException(ParseError.EPUB_NO_SPINE, "這個 EPUB 沒有任何可閱讀的章節。")
         }
 
         val images = mutableListOf<ImagePage>()
@@ -105,6 +105,7 @@ object EpubParser {
                 if (images.size >= sections.size) BookContent.Images(images) else textContent(sections)
             }
             else -> throw BookParseException(
+                ParseError.EPUB_NO_CONTENT,
                 "這個 EPUB 中找不到可顯示的內容，可能受 DRM 保護或檔案不完整。",
             )
         }

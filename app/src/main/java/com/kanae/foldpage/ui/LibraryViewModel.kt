@@ -6,6 +6,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.kanae.foldpage.data.Book
 import com.kanae.foldpage.data.LibraryRepository
+import com.kanae.foldpage.format.BookParseException
+import com.kanae.foldpage.format.ParseError
+import com.kanae.foldpage.ui.i18n.UiKey
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +24,8 @@ data class LibraryUiState(
 
 sealed interface LibraryEvent {
     data class OpenBook(val bookId: String) : LibraryEvent
-    data class Message(val text: String) : LibraryEvent
+    data class Message(val key: UiKey, val args: List<Any> = emptyList()) : LibraryEvent
+    data class Failure(val error: ParseError, val detail: String? = null) : LibraryEvent
 }
 
 class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() {
@@ -45,7 +49,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                 }
                 .onFailure {
                     _state.update { it.copy(loading = false) }
-                    _events.send(LibraryEvent.Message("讀取書庫失敗：${it.message ?: "未知錯誤"}"))
+                    _events.send(LibraryEvent.Failure(ParseError.UNKNOWN, it.message))
                 }
         }
     }
@@ -61,11 +65,19 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                 if (openAfter) {
                     _events.send(LibraryEvent.OpenBook(book.id))
                 } else {
-                    _events.send(LibraryEvent.Message("已匯入《${book.title}》"))
+                    _events.send(
+                        LibraryEvent.Message(UiKey.IMPORTED_BOOK, listOf(book.title)),
+                    )
                 }
             } catch (e: Exception) {
                 _state.update { it.copy(importing = false) }
-                _events.send(LibraryEvent.Message(e.message ?: "匯入失敗，請再試一次。"))
+                val parse = e as? BookParseException
+                _events.send(
+                    LibraryEvent.Failure(
+                        error = parse?.kind ?: ParseError.UNKNOWN,
+                        detail = e.message,
+                    ),
+                )
             }
         }
     }
@@ -75,9 +87,9 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
             runCatching { repository.delete(book) }
                 .onSuccess {
                     _state.update { state -> state.copy(books = state.books.filterNot { it.id == book.id }) }
-                    _events.send(LibraryEvent.Message("已移除《${book.title}》"))
+                    _events.send(LibraryEvent.Message(UiKey.REMOVED_BOOK, listOf(book.title)))
                 }
-                .onFailure { _events.send(LibraryEvent.Message("移除失敗：${it.message ?: "未知錯誤"}")) }
+                .onFailure { _events.send(LibraryEvent.Message(UiKey.DELETE_FAILED)) }
         }
     }
 
@@ -90,7 +102,7 @@ class LibraryViewModel(private val repository: LibraryRepository) : ViewModel() 
                     }
                     onRestarted(updated)
                 }
-                .onFailure { _events.send(LibraryEvent.Message("無法重設閱讀進度。")) }
+                .onFailure { _events.send(LibraryEvent.Message(UiKey.RESET_FAILED)) }
         }
     }
 

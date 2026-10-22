@@ -30,4 +30,24 @@ data class ParsedBook(
     val content: BookContent,
 )
 
-class BookParseException(message: String, cause: Throwable? = null) : Exception(message, cause)
+enum class ParseError {
+    FILE_READ,
+    NOT_EPUB,
+    EMPTY_FILE,
+    TOO_LARGE,
+    UNSUPPORTED_FORMAT,
+    EPUB_CONTAINER,
+    EPUB_OPF,
+    EPUB_NO_SPINE,
+    EPUB_NO_CONTENT,
+    TXT_EMPTY,
+    BOOK_MISSING,
+    FILE_MISSING,
+    UNKNOWN,
+}
+
+class BookParseException(
+    val kind: ParseError,
+    message: String,
+    cause: Throwable? = null,
+) : Exception(message, cause)

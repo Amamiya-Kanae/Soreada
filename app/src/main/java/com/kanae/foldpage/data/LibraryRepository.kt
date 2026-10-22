@@ -10,6 +10,7 @@ import android.provider.OpenableColumns
 import com.kanae.foldpage.format.BookContent
 import com.kanae.foldpage.format.BookParseException
 import com.kanae.foldpage.format.EpubParser
+import com.kanae.foldpage.format.ParseError
 import com.kanae.foldpage.format.ParsedBook
 import com.kanae.foldpage.format.TextParser
 import kotlinx.coroutines.Dispatchers
@@ -56,20 +57,20 @@ class LibraryRepository(private val context: Context) {
         val temp = File.createTempFile("import-", ".tmp", booksDir)
         try {
             val input = context.contentResolver.openInputStream(uri)
-                ?: throw BookParseException("無法讀取這個檔案，請再試一次。")
+                ?: throw BookParseException(ParseError.FILE_READ, "無法讀取這個檔案，請再試一次。")
             input.use { source ->
                 temp.outputStream().use { target -> source.copyTo(target, 128 * 1024) }
             }
-            if (temp.length() == 0L) throw BookParseException("這個檔案是空的。")
+            if (temp.length() == 0L) throw BookParseException(ParseError.EMPTY_FILE, "這個檔案是空的。")
             if (temp.length() > MAX_IMPORT_BYTES) {
-                throw BookParseException("檔案太大（超過 300 MB），暫時無法匯入。")
+                throw BookParseException(ParseError.TOO_LARGE, "檔案太大（超過 300 MB），暫時無法匯入。")
             }
             val format = detectFormat(displayName, mime, temp)
             importTemp(temp, displayName, format)
         } catch (e: Exception) {
             temp.delete()
             if (e is BookParseException) throw e
-            throw BookParseException("匯入失敗：${e.message ?: "未知錯誤"}", e)
+            throw BookParseException(ParseError.UNKNOWN, "匯入失敗：${e.message ?: "未知錯誤"}", e)
         }
     }
 
@@ -83,7 +84,7 @@ class LibraryRepository(private val context: Context) {
         } catch (e: Exception) {
             temp.delete()
             if (e is BookParseException) throw e
-            throw BookParseException("匯入失敗：${e.message ?: "未知錯誤"}", e)
+            throw BookParseException(ParseError.UNKNOWN, "匯入失敗：${e.message ?: "未知錯誤"}", e)
         }
     }
 
@@ -166,6 +167,21 @@ class LibraryRepository(private val context: Context) {
         }
     }
 
+    suspend fun updateBookmarks(id: String, bookmarks: List<Bookmark>): Book? =
+        withContext(Dispatchers.IO) {
+            mutex.withLock {
+                val books = readLocked().toMutableList()
+                val index = books.indexOfFirst { it.id == id }
+                if (index < 0) return@withLock null
+                val updated = books[index].copy(
+                    bookmarks = bookmarks.sortedBy { it.position },
+                )
+                books[index] = updated
+                writeLocked(books)
+                updated
+            }
+        }
+
     suspend fun restart(book: Book): Book = withContext(Dispatchers.IO) {
         mutex.withLock {
             val books = readLocked().toMutableList()
@@ -189,7 +205,7 @@ class LibraryRepository(private val context: Context) {
         if (read >= 2 && header[0] == 'P'.code.toByte() && header[1] == 'K'.code.toByte()) {
             return BookFormat.EPUB
         }
-        throw BookParseException("只支援 EPUB 或 TXT 檔案。")
+        throw BookParseException(ParseError.UNSUPPORTED_FORMAT, "只支援 EPUB 或 TXT 檔案。")
     }
 
     private fun queryDisplayName(uri: Uri): String? = runCatching {

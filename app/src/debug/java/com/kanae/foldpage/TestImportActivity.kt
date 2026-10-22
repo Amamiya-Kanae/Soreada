@@ -32,7 +32,7 @@ class TestImportActivity : Activity() {
             finish()
             return
         }
-        val app = application as FoldPageApplication
+        val app = application as SoreadaApplication
         scope.launch {
             try {
                 val book = app.library.importFromFile(source, source.name)
