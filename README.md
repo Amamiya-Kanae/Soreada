@@ -30,6 +30,8 @@
 
 ## Screenshots
 
+> 部分圖片為排版示意，非逐像素截圖。 / Some images are illustrative layout mockups.
+
 | Library / 書庫 | First-run tips / 首次提示 | Foldable spread / 摺疊屏雙頁 |
 | --- | --- | --- |
 | ![Library](docs/screenshots/library.png) | ![Onboarding](docs/screenshots/onboarding.png) | ![Foldable spread](docs/screenshots/comic-landscape.png) |

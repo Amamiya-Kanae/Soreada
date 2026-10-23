@@ -248,7 +248,7 @@ h2 {
   margin-top: 3px;
 }
 
-.gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
 .shot { margin: 0; }
 .shot img {
   border-radius: 18px;
