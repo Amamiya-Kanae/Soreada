@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Soreada — Free Open-Source EPUB/TXT Reader for Foldables & Tablets</title>
+    <meta name="description" content="Soreada is a free, open-source Android EPUB/TXT reader with single- and two-page foldable layouts, wide-tablet support, eye care, bookmarks, and library search.">
+    <link rel="canonical" href="https://amamiya-kanae.github.io/Soreada/en/">
+    <link rel="alternate" hreflang="zh-Hant" href="https://amamiya-kanae.github.io/Soreada/">
+    <link rel="alternate" hreflang="zh-Hans" href="https://amamiya-kanae.github.io/Soreada/zh-cn/">
+    <link rel="alternate" hreflang="en" href="https://amamiya-kanae.github.io/Soreada/en/">
+    <link rel="alternate" hreflang="x-default" href="https://amamiya-kanae.github.io/Soreada/">
+    <meta name="theme-color" content="#e1f6ee">
+    <meta name="author" content="Amamiya-Kanae">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Soreada">
+    <meta property="og:title" content="Soreada — Free Open-Source EPUB/TXT Reader for Foldables & Tablets">
+    <meta property="og:description" content="Soreada is a free, open-source Android EPUB/TXT reader with single- and two-page foldable layouts, wide-tablet support, eye care, bookmarks, and library search.">
+    <meta property="og:url" content="https://amamiya-kanae.github.io/Soreada/en/">
+    <meta property="og:image" content="https://amamiya-kanae.github.io/Soreada/social-preview.png">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="640">
+    <meta property="og:image:alt" content="Soreada 蘇打閱讀 — EPUB/TXT reader for foldables and tablets">
+    <meta property="og:locale" content="en_US">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Soreada — Free Open-Source EPUB/TXT Reader for Foldables & Tablets">
+    <meta name="twitter:description" content="Soreada is a free, open-source Android EPUB/TXT reader with single- and two-page foldable layouts, wide-tablet support, eye care, bookmarks, and library search.">
+    <meta name="twitter:image" content="https://amamiya-kanae.github.io/Soreada/social-preview.png">
+    <link rel="icon" type="image/png" href="../screenshots/icon.png">
+    <link rel="apple-touch-icon" href="../screenshots/icon.png">
+    <!-- Google Search Console verification: replace this comment with the meta tag Google gives you. -->
+    <link rel="stylesheet" href="../styles.css">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Soreada", "alternateName": ["蘇打閱讀", "苏打阅读"], "description": "Soreada is a free, open-source Android EPUB/TXT reader with single- and two-page foldable layouts, wide-tablet support, eye care, bookmarks, and library search.", "url": "https://amamiya-kanae.github.io/Soreada/en/", "downloadUrl": "https://github.com/Amamiya-Kanae/Soreada/releases/latest", "softwareVersion": "0.3.0", "applicationCategory": "MultimediaApplication", "operatingSystem": "Android 8.0+", "inLanguage": ["zh-Hant", "zh-Hans", "en"], "license": "https://opensource.org/license/mit", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Amamiya-Kanae", "url": "https://github.com/Amamiya-Kanae"}, "sameAs": ["https://github.com/Amamiya-Kanae/Soreada"], "screenshot": ["https://amamiya-kanae.github.io/Soreada/screenshots/library.png", "https://amamiya-kanae.github.io/Soreada/screenshots/comic-landscape.png", "https://amamiya-kanae.github.io/Soreada/screenshots/onboarding.png"]}</script>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is it really free?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Soreada is an MIT-licensed open-source project with no ads, subscriptions or paywall."}}, {"@type": "Question", "name": "Which formats are supported?", "acceptedAnswer": {"@type": "Answer", "text": "EPUB 2/3 and TXT. DRM, CBZ/CBR and PDF are not supported yet."}}, {"@type": "Question", "name": "Does it work on foldables and tablets?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. One page upright, two pages landscape; wide tablets also get two pages, while cover screens stay single-page."}}, {"@type": "Question", "name": "Does the library sync?", "acceptedAnswer": {"@type": "Answer", "text": "The library is local to the device and needs no account. Moving devices means re-importing books."}}, {"@type": "Question", "name": "How do I report a bug?", "acceptedAnswer": {"@type": "Answer", "text": "Open an issue on GitHub Issues with your device model, Android version and reproduction steps."}}]}</script>
+</head>
+<body>
+<header class="site-header">
+    <div class="wrap nav">
+        <a class="brand" href="../">
+            <img src="../screenshots/icon.png" alt="" width="36" height="36">
+            <span>Soreada</span>
+        </a>
+        <nav class="nav-links" aria-label="Main">
+            <a href="../#features">Features</a>
+            <a href="../#foldable">Foldables</a>
+            <a href="../#screenshots">Screenshots</a>
+            <a href="../#download">Download</a>
+        </nav>
+        <div class="langs" aria-label="Language">
+        <a href="../">繁中</a>
+        <a href="../zh-cn/">简中</a>
+        <a href="./" aria-current="page">EN</a>
+        </div>
+        <a class="nav-cta" href="https://github.com/Amamiya-Kanae/Soreada">GitHub</a>
+    </div>
+</header>
+
+<main>
+    <section class="hero wrap">
+        <div class="hero-copy">
+            <p class="eyebrow">Android · EPUB/TXT · Open source</p>
+            <h1>Soreada<span class="thin">for foldables and tablets</span></h1>
+            <p class="lead">A free, open-source EPUB/TXT reader that turns a foldable or tablet into a book: one page upright, two pages unfolded, clean white margins, no subscriptions and no ads.</p>
+            <div class="actions">
+                <a class="button" href="https://github.com/Amamiya-Kanae/Soreada/releases/latest">Download the APK</a>
+                <a class="button secondary" href="https://github.com/Amamiya-Kanae/Soreada">View on GitHub</a>
+            </div>
+            <p class="meta">v0.3.0 · Android 8.0+ · MIT License</p>
+        </div>
+        <div class="hero-art">
+            <div class="device main">
+                <img src="../screenshots/comic-landscape.png" alt="Soreada two-page comic spread on a foldable" width="1768" height="2208">
+            </div>
+            <div class="device small">
+                <img src="../screenshots/library.png" alt="Soreada library" width="1768" height="2208" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <section class="wrap" id="features">
+        <div class="section-head">
+            <p class="section-kicker">FEATURES</p>
+            <h2>The details that make reading work</h2>
+            <p>Not every feature crammed into one screen — paging, typography and display done properly.</p>
+        </div>
+        <div class="features">
+        <article class="card">
+          <span class="num">01</span>
+          <h3>Foldables and wide tablets</h3>
+          <p>Single or two-page layouts follow the window size; narrow cover screens stay single-page.</p>
+        </article>
+        <article class="card">
+          <span class="num">02</span>
+          <h3>Comics and text</h3>
+          <p>EPUB image spines and TXT encoding detection; comics and long-form text both work.</p>
+        </article>
+        <article class="card">
+          <span class="num">03</span>
+          <h3>Eye care and paper grain</h3>
+          <p>A warm filter and reading-page grain, both adjustable for longer sessions.</p>
+        </article>
+        <article class="card">
+          <span class="num">04</span>
+          <h3>Bookmarks and quick jumps</h3>
+          <p>Dots above the progress bar jump straight to a bookmark; text bookmarks keep character offsets.</p>
+        </article>
+        <article class="card">
+          <span class="num">05</span>
+          <h3>Pinch to zoom</h3>
+          <p>1×–4× on comic pages, with one-finger pan while enlarged.</p>
+        </article>
+        <article class="card">
+          <span class="num">06</span>
+          <h3>Three languages, Material 3</h3>
+          <p>Traditional Chinese, Simplified Chinese and English; dark mode and a modern UI.</p>
+        </article>
+        </div>
+    </section>
+
+    <section class="wrap" id="foldable">
+        <div class="foldable">
+            <div class="device">
+                <img src="../screenshots/comic-landscape.png" alt="Two-page foldable reading layout" width="1768" height="2208" loading="lazy">
+            </div>
+            <div>
+                <p class="section-kicker">FOLDABLE & TABLET</p>
+                <h2>One layout, not tied to a device</h2>
+                <p>Soreada chooses its layout from the current window size, not a model name. Unfold, fold or rotate and it keeps your page.</p>
+                <ul class="checklist">
+          <li>Inner screen portrait: one full page, white letterboxing</li>
+          <li>Inner screen landscape / wide tablet: two pages side by side</li>
+          <li>Cover screen / narrow window: single page</li>
+          <li>Unfold, fold or rotate: keep the page; text reflows</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="wrap" id="screenshots">
+        <div class="section-head">
+            <p class="section-kicker">SCREENSHOTS</p>
+            <h2>See it reading</h2>
+            <p>The library, the first-run tips, and a two-page foldable spread.</p>
+        </div>
+        <div class="gallery">
+            <figure class="shot">
+                <img src="../screenshots/library.png" alt="Soreada library" width="1768" height="2208" loading="lazy">
+                <figcaption>Library: import, covers, progress and search</figcaption>
+            </figure>
+            <figure class="shot">
+                <img src="../screenshots/onboarding.png" alt="Soreada first-run tips" width="1768" height="2208" loading="lazy">
+                <figcaption>First run: a one-time gesture card</figcaption>
+            </figure>
+            <figure class="shot">
+                <img src="../screenshots/comic-landscape.png" alt="Soreada two-page spread" width="1768" height="2208" loading="lazy">
+                <figcaption>Foldable spread: two pages side by side</figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section class="wrap" id="download">
+        <div class="download">
+            <div>
+                <p class="section-kicker">DOWNLOAD</p>
+                <h2>Free to download. No subscription.</h2>
+                <p>The APK is published on GitHub Releases. Android 8.0 or newer; allow unknown sources before installing.</p>
+                <div class="actions">
+                    <a class="button" href="https://github.com/Amamiya-Kanae/Soreada/releases/latest">Download the APK</a>
+                    <a class="button secondary" href="https://github.com/Amamiya-Kanae/Soreada">GitHub project</a>
+                </div>
+                <p class="meta">Source, issues and release notes live on GitHub.</p>
+            </div>
+            <div>
+                <p class="section-kicker">VERSION</p>
+                <h2 style="font-size:clamp(2.6rem,6vw,4.6rem);margin:0;color:#fff">0.3.0</h2>
+                <p class="meta">Android 8.0+ · MIT</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="wrap" id="faq">
+        <div class="section-head">
+            <p class="section-kicker">FAQ</p>
+            <h2>Common questions</h2>
+        </div>
+        <div class="faq">
+        <details>
+          <summary>Is it really free?</summary>
+          <p>Yes. Soreada is an MIT-licensed open-source project with no ads, subscriptions or paywall.</p>
+        </details>
+        <details>
+          <summary>Which formats are supported?</summary>
+          <p>EPUB 2/3 and TXT. DRM, CBZ/CBR and PDF are not supported yet.</p>
+        </details>
+        <details>
+          <summary>Does it work on foldables and tablets?</summary>
+          <p>Yes. One page upright, two pages landscape; wide tablets also get two pages, while cover screens stay single-page.</p>
+        </details>
+        <details>
+          <summary>Does the library sync?</summary>
+          <p>The library is local to the device and needs no account. Moving devices means re-importing books.</p>
+        </details>
+        <details>
+          <summary>How do I report a bug?</summary>
+          <p>Open an issue on GitHub Issues with your device model, Android version and reproduction steps.</p>
+        </details>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="wrap foot">
+        <span>Built by Amamiya-Kanae · MIT License · Free and open source</span>
+        <span class="foot-langs"><a href="../">繁中</a> · <a href="../zh-cn/">简中</a> · <a href="./">EN</a></span>
+        <span><a href="https://github.com/Amamiya-Kanae/Soreada">GitHub</a> · <a href="https://github.com/Amamiya-Kanae/Soreada/issues">Report an issue</a> · <a href="https://github.com/Amamiya-Kanae/Soreada/blob/main/LICENSE">MIT License</a></span>
+    </div>
+</footer>
+</body>
+</html>

@@ -19,6 +19,8 @@
 </p>
 
 <p align="center">
+  <a href="https://amamiya-kanae.github.io/Soreada/"><strong>官方網站 / Website</strong></a> ·
+  <a href="https://github.com/Amamiya-Kanae/Soreada/releases/latest">下載 APK</a> ·
   <a href="#繁體中文">繁體中文</a> ·
   <a href="#简体中文">简体中文</a> ·
   <a href="#english">English</a>

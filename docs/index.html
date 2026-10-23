@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>蘇打閱讀 Soreada — 免費開源 EPUB/TXT 閱讀器，支援摺疊屏與平板</title>
+    <meta name="description" content="Soreada 是免費、開源的 Android EPUB／TXT 閱讀器，支援摺疊屏單頁／雙頁、平板寬屏、護眼模式、書籤與書庫搜尋。">
+    <link rel="canonical" href="https://amamiya-kanae.github.io/Soreada/">
+    <link rel="alternate" hreflang="zh-Hant" href="https://amamiya-kanae.github.io/Soreada/">
+    <link rel="alternate" hreflang="zh-Hans" href="https://amamiya-kanae.github.io/Soreada/zh-cn/">
+    <link rel="alternate" hreflang="en" href="https://amamiya-kanae.github.io/Soreada/en/">
+    <link rel="alternate" hreflang="x-default" href="https://amamiya-kanae.github.io/Soreada/">
+    <meta name="theme-color" content="#e1f6ee">
+    <meta name="author" content="Amamiya-Kanae">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Soreada">
+    <meta property="og:title" content="蘇打閱讀 Soreada — 免費開源 EPUB/TXT 閱讀器，支援摺疊屏與平板">
+    <meta property="og:description" content="Soreada 是免費、開源的 Android EPUB／TXT 閱讀器，支援摺疊屏單頁／雙頁、平板寬屏、護眼模式、書籤與書庫搜尋。">
+    <meta property="og:url" content="https://amamiya-kanae.github.io/Soreada/">
+    <meta property="og:image" content="https://amamiya-kanae.github.io/Soreada/social-preview.png">
+    <meta property="og:image:width" content="1280">
+    <meta property="og:image:height" content="640">
+    <meta property="og:image:alt" content="Soreada 蘇打閱讀 — EPUB/TXT reader for foldables and tablets">
+    <meta property="og:locale" content="zh_TW">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="蘇打閱讀 Soreada — 免費開源 EPUB/TXT 閱讀器，支援摺疊屏與平板">
+    <meta name="twitter:description" content="Soreada 是免費、開源的 Android EPUB／TXT 閱讀器，支援摺疊屏單頁／雙頁、平板寬屏、護眼模式、書籤與書庫搜尋。">
+    <meta name="twitter:image" content="https://amamiya-kanae.github.io/Soreada/social-preview.png">
+    <link rel="icon" type="image/png" href="screenshots/icon.png">
+    <link rel="apple-touch-icon" href="screenshots/icon.png">
+    <!-- Google Search Console verification: replace this comment with the meta tag Google gives you. -->
+    <link rel="stylesheet" href="styles.css">
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "SoftwareApplication", "name": "Soreada", "alternateName": ["蘇打閱讀", "苏打阅读"], "description": "Soreada 是免費、開源的 Android EPUB／TXT 閱讀器，支援摺疊屏單頁／雙頁、平板寬屏、護眼模式、書籤與書庫搜尋。", "url": "https://amamiya-kanae.github.io/Soreada/", "downloadUrl": "https://github.com/Amamiya-Kanae/Soreada/releases/latest", "softwareVersion": "0.3.0", "applicationCategory": "MultimediaApplication", "operatingSystem": "Android 8.0+", "inLanguage": ["zh-Hant", "zh-Hans", "en"], "license": "https://opensource.org/license/mit", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "author": {"@type": "Person", "name": "Amamiya-Kanae", "url": "https://github.com/Amamiya-Kanae"}, "sameAs": ["https://github.com/Amamiya-Kanae/Soreada"], "screenshot": ["https://amamiya-kanae.github.io/Soreada/screenshots/library.png", "https://amamiya-kanae.github.io/Soreada/screenshots/comic-landscape.png", "https://amamiya-kanae.github.io/Soreada/screenshots/onboarding.png"]}</script>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "真的免費嗎？", "acceptedAnswer": {"@type": "Answer", "text": "是。Soreada 是 MIT 授權的開源專案，沒有廣告、訂閱或付費牆。"}}, {"@type": "Question", "name": "支援哪些格式？", "acceptedAnswer": {"@type": "Answer", "text": "EPUB 2/3 與 TXT。目前不支援 DRM、CBZ/CBR、PDF。"}}, {"@type": "Question", "name": "支援摺疊屏和平板嗎？", "acceptedAnswer": {"@type": "Answer", "text": "支援。內屏直向單頁、橫向雙頁；平板寬屏也是雙頁，外屏維持單頁。"}}, {"@type": "Question", "name": "書庫會同步嗎？", "acceptedAnswer": {"@type": "Answer", "text": "書庫存在裝置本機，不需要帳號；換裝置需重新匯入。"}}, {"@type": "Question", "name": "如何回報問題？", "acceptedAnswer": {"@type": "Answer", "text": "到 GitHub Issues 開 Issue，附上裝置型號、Android 版本與重現步驟。"}}]}</script>
+</head>
+<body>
+<header class="site-header">
+    <div class="wrap nav">
+        <a class="brand" href="./">
+            <img src="screenshots/icon.png" alt="" width="36" height="36">
+            <span>Soreada</span>
+        </a>
+        <nav class="nav-links" aria-label="Main">
+            <a href="./#features">功能</a>
+            <a href="./#foldable">摺疊屏</a>
+            <a href="./#screenshots">截圖</a>
+            <a href="./#download">下載</a>
+        </nav>
+        <div class="langs" aria-label="Language">
+        <a href="./" aria-current="page">繁中</a>
+        <a href="zh-cn/">简中</a>
+        <a href="en/">EN</a>
+        </div>
+        <a class="nav-cta" href="https://github.com/Amamiya-Kanae/Soreada">GitHub</a>
+    </div>
+</header>
+
+<main>
+    <section class="hero wrap">
+        <div class="hero-copy">
+            <p class="eyebrow">Android · EPUB／TXT · 開源</p>
+            <h1>Soreada<span class="thin">蘇打閱讀</span></h1>
+            <p class="lead">免費、開源的 Android EPUB／TXT 閱讀器。把摺疊屏與平板變成一本書：直向一頁、展開兩頁，留白乾淨，沒有訂閱與廣告。</p>
+            <div class="actions">
+                <a class="button" href="https://github.com/Amamiya-Kanae/Soreada/releases/latest">下載最新 APK</a>
+                <a class="button secondary" href="https://github.com/Amamiya-Kanae/Soreada">在 GitHub 查看</a>
+            </div>
+            <p class="meta">v0.3.0 · Android 8.0+ · MIT License</p>
+        </div>
+        <div class="hero-art">
+            <div class="device main">
+                <img src="screenshots/comic-landscape.png" alt="Soreada two-page comic spread on a foldable" width="1768" height="2208">
+            </div>
+            <div class="device small">
+                <img src="screenshots/library.png" alt="Soreada library" width="1768" height="2208" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <section class="wrap" id="features">
+        <div class="section-head">
+            <p class="section-kicker">FEATURES</p>
+            <h2>為閱讀而做的細節</h2>
+            <p>不是把所有功能塞進同一個畫面，而是把翻頁、排版與顯示做好。</p>
+        </div>
+        <div class="features">
+        <article class="card">
+          <span class="num">01</span>
+          <h3>摺疊屏與平板寬屏</h3>
+          <p>依視窗尺寸自動切換單頁、雙頁；外屏或窄視窗不會硬塞兩頁。</p>
+        </article>
+        <article class="card">
+          <span class="num">02</span>
+          <h3>漫畫與文字</h3>
+          <p>支援 EPUB 圖像 spine、TXT 編碼辨識；漫畫與長篇文字都能讀。</p>
+        </article>
+        <article class="card">
+          <span class="num">03</span>
+          <h3>護眼與紙張顆粒</h3>
+          <p>暖色濾鏡與閱讀頁顆粒，強度可調，長時間閱讀更舒服。</p>
+        </article>
+        <article class="card">
+          <span class="num">04</span>
+          <h3>書籤與快速跳轉</h3>
+          <p>進度條圓點直接跳頁；文字書的書籤以字元位置保存。</p>
+        </article>
+        <article class="card">
+          <span class="num">05</span>
+          <h3>雙指縮放</h3>
+          <p>漫畫頁支援 1×–4× 縮放，放大後可單指拖動。</p>
+        </article>
+        <article class="card">
+          <span class="num">06</span>
+          <h3>三語與 Material 3</h3>
+          <p>繁中、簡中、English 即時切換；支援深色模式與現代介面。</p>
+        </article>
+        </div>
+    </section>
+
+    <section class="wrap" id="foldable">
+        <div class="foldable">
+            <div class="device">
+                <img src="screenshots/comic-landscape.png" alt="Two-page foldable reading layout" width="1768" height="2208" loading="lazy">
+            </div>
+            <div>
+                <p class="section-kicker">FOLDABLE & TABLET</p>
+                <h2>一個版面，不被裝置綁死</h2>
+                <p>Soreada 依目前視窗寬高決定版面，不綁定特定機型；展開、摺疊、旋轉都會保留目前頁。</p>
+                <ul class="checklist">
+          <li>內屏直向：完整一頁，白色留白</li>
+          <li>內屏橫向／平板寬屏：左右雙頁</li>
+          <li>外屏／窄視窗：維持單頁</li>
+          <li>展開、摺疊、旋轉：保留頁碼，文字重新排版</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="wrap" id="screenshots">
+        <div class="section-head">
+            <p class="section-kicker">SCREENSHOTS</p>
+            <h2>看它實際閱讀的樣子</h2>
+            <p>書庫、第一次開書提示，與摺疊屏橫向雙頁。</p>
+        </div>
+        <div class="gallery">
+            <figure class="shot">
+                <img src="screenshots/library.png" alt="Soreada library" width="1768" height="2208" loading="lazy">
+                <figcaption>書庫：匯入、封面、進度與搜尋</figcaption>
+            </figure>
+            <figure class="shot">
+                <img src="screenshots/onboarding.png" alt="Soreada first-run tips" width="1768" height="2208" loading="lazy">
+                <figcaption>第一次開書：一次性的操作提示</figcaption>
+            </figure>
+            <figure class="shot">
+                <img src="screenshots/comic-landscape.png" alt="Soreada two-page spread" width="1768" height="2208" loading="lazy">
+                <figcaption>摺疊屏雙頁：橫向左右並排</figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <section class="wrap" id="download">
+        <div class="download">
+            <div>
+                <p class="section-kicker">DOWNLOAD</p>
+                <h2>免費下載，沒有訂閱</h2>
+                <p>APK 由 GitHub Releases 提供。Android 8.0 以上；安裝前請允許不明來源。</p>
+                <div class="actions">
+                    <a class="button" href="https://github.com/Amamiya-Kanae/Soreada/releases/latest">下載最新 APK</a>
+                    <a class="button secondary" href="https://github.com/Amamiya-Kanae/Soreada">GitHub 專案</a>
+                </div>
+                <p class="meta">原始碼、Issue 與版本紀錄都在 GitHub。</p>
+            </div>
+            <div>
+                <p class="section-kicker">VERSION</p>
+                <h2 style="font-size:clamp(2.6rem,6vw,4.6rem);margin:0;color:#fff">0.3.0</h2>
+                <p class="meta">Android 8.0+ · MIT</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="wrap" id="faq">
+        <div class="section-head">
+            <p class="section-kicker">FAQ</p>
+            <h2>常見問題</h2>
+        </div>
+        <div class="faq">
+        <details>
+          <summary>真的免費嗎？</summary>
+          <p>是。Soreada 是 MIT 授權的開源專案，沒有廣告、訂閱或付費牆。</p>
+        </details>
+        <details>
+          <summary>支援哪些格式？</summary>
+          <p>EPUB 2/3 與 TXT。目前不支援 DRM、CBZ/CBR、PDF。</p>
+        </details>
+        <details>
+          <summary>支援摺疊屏和平板嗎？</summary>
+          <p>支援。內屏直向單頁、橫向雙頁；平板寬屏也是雙頁，外屏維持單頁。</p>
+        </details>
+        <details>
+          <summary>書庫會同步嗎？</summary>
+          <p>書庫存在裝置本機，不需要帳號；換裝置需重新匯入。</p>
+        </details>
+        <details>
+          <summary>如何回報問題？</summary>
+          <p>到 GitHub Issues 開 Issue，附上裝置型號、Android 版本與重現步驟。</p>
+        </details>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="wrap foot">
+        <span>由 Amamiya-Kanae 開發 · MIT License · 免費開源</span>
+        <span class="foot-langs"><a href="./">繁中</a> · <a href="zh-cn/">简中</a> · <a href="en/">EN</a></span>
+        <span><a href="https://github.com/Amamiya-Kanae/Soreada">GitHub</a> · <a href="https://github.com/Amamiya-Kanae/Soreada/issues">回報問題</a> · <a href="https://github.com/Amamiya-Kanae/Soreada/blob/main/LICENSE">MIT License</a></span>
+    </div>
+</footer>
+</body>
+</html>
