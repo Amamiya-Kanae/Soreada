@@ -322,3 +322,5 @@ footer a { color: var(--accent); text-decoration: none; }
 .hero-copy, .hero-art, .foldable > *, .features > *, .gallery > *, .download > * { min-width: 0; }
 .device img, .shot img { width: 100%; height: auto; }
 body { overflow-x: clip; }
+
+.hero-art .device.main, .foldable .device { background: transparent; border: 0; box-shadow: none; border-radius: 0; overflow: visible; }
